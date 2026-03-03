@@ -39,4 +39,8 @@ public class Wish {
     public Product getProduct() {
         return product;
     }
+
+    public Boolean equalsMemberId(Long memberId) {
+        return this.memberId.equals(memberId);
+    }
 }
