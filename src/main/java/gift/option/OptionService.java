@@ -49,7 +49,7 @@ public class OptionService {
         }
 
         Option option = optionRepository.findById(optionId)
-            .filter(o -> o.getProduct().getId().equals(productId))
+            .filter(o -> o.equalsProductId(productId))
             .orElseThrow(() -> new NoSuchElementException("옵션이 존재하지 않습니다."));
 
         optionRepository.delete(option);
