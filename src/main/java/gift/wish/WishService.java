@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import gift.product.Product;
 import gift.product.ProductRepository;
 
-@Transactional
 @Service
 public class WishService {
     private final WishRepository wishRepository;
@@ -27,6 +26,7 @@ public class WishService {
         return wishRepository.findByMemberId(memberId, pageable).map(WishResponse::from);
     }
 
+    @Transactional
     public WishResponse add(Long memberId, WishRequest request) {
         // check product
         Product product = productRepository.findById(request.productId())
@@ -46,6 +46,7 @@ public class WishService {
         return wishRepository.findByMemberIdAndProductId(memberId, productId).isPresent();
     }
 
+    @Transactional
     public void remove(Long memberId, Long wishId) {
         Wish wish = wishRepository.findById(wishId)
             .orElseThrow(() -> new NoSuchElementException("위시가 존재하지 않습니다."));

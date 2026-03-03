@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import gift.category.Category;
 import gift.category.CategoryRepository;
 
-@Transactional
 @Service
 public class ProductService {
     private final ProductRepository productRepository;
@@ -34,6 +33,7 @@ public class ProductService {
         return ProductResponse.from(product);
     }
 
+    @Transactional
     public ProductResponse create(ProductRequest request) {
         validateName(request.name());
         Category category = findCategory(request.categoryId());
@@ -41,6 +41,7 @@ public class ProductService {
         return ProductResponse.from(saved);
     }
 
+    @Transactional
     public ProductResponse update(Long id, ProductRequest request) {
         validateName(request.name());
         Category category = findCategory(request.categoryId());

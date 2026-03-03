@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import gift.product.Product;
 import gift.product.ProductRepository;
 
-@Transactional
 @Service
 public class OptionService {
     private final OptionRepository optionRepository;
@@ -28,6 +27,7 @@ public class OptionService {
             .toList();
     }
 
+    @Transactional
     public OptionResponse create(Long productId, OptionRequest request) {
         validateName(request.name());
         Product product = findProduct(productId);
@@ -40,6 +40,7 @@ public class OptionService {
         return OptionResponse.from(saved);
     }
 
+    @Transactional
     public void delete(Long productId, Long optionId) {
         validateProductExists(productId);
 

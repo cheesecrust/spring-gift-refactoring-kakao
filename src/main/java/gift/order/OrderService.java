@@ -14,7 +14,6 @@ import gift.option.OptionRepository;
 import gift.product.Product;
 import gift.wish.WishRepository;
 
-@Transactional
 @Service
 public class OrderService {
     private final OrderRepository orderRepository;
@@ -42,6 +41,7 @@ public class OrderService {
         return orderRepository.findByMemberId(memberId, pageable).map(OrderResponse::from);
     }
 
+    @Transactional
     public OrderResponse create(Member member, OrderRequest request) {
         // validate option
         Option option = optionRepository.findById(request.optionId())

@@ -6,7 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 import gift.auth.JwtProvider;
 import gift.auth.TokenResponse;
 
-@Transactional
 @Service
 public class MemberService {
     private final MemberRepository memberRepository;
@@ -17,6 +16,7 @@ public class MemberService {
         this.jwtProvider = jwtProvider;
     }
 
+    @Transactional
     public TokenResponse register(MemberRequest request) {
         if (memberRepository.existsByEmail(request.email())) {
             throw new IllegalArgumentException("Email is already registered.");
@@ -24,6 +24,14 @@ public class MemberService {
         Member member = memberRepository.save(new Member(request.email(), request.password()));
         String token = jwtProvider.createToken(member.getEmail());
         return new TokenResponse(token);
+    }
+
+    @Transactional
+    public Member findOrCreateByEmail(String email, String kakaoAccessToken) {
+        Member member = memberRepository.findByEmail(email)
+            .orElseGet(() -> new Member(email));
+        member.updateKakaoAccessToken(kakaoAccessToken);
+        return memberRepository.save(member);
     }
 
     @Transactional(readOnly = true)
