@@ -58,4 +58,8 @@ public class Option {
     public int getQuantity() {
         return quantity;
     }
+
+    public Boolean equalsProductId(Long productId) {
+        return this.product.getId().equals(productId);
+    }
 }
