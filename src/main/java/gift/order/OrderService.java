@@ -62,7 +62,6 @@ public class OrderService {
         return OrderResponse.from(saved);
     }
 
-    @Transactional(readOnly = true)
     public void sendKakaoMessageIfPossible(Member member, Long orderId) {
         if (member.getKakaoAccessToken() == null) {
             return;
