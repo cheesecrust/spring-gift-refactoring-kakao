@@ -279,6 +279,48 @@ class ProductAcceptanceTest {
     }
 
     @Test
+    void 상품_목록_조회_카테고리_필터링() {
+        // given
+        Long categoryA = createCategory("전자기기");
+        Long categoryB = createCategory("가구");
+        createProduct("노트북", 1000000, "https://example.com/laptop.jpg", categoryA);
+        createProduct("키보드", 50000, "https://example.com/keyboard.jpg", categoryA);
+        createProduct("책상", 500000, "https://example.com/desk.jpg", categoryB);
+
+        // when
+        var response = given()
+            .queryParam("categoryId", categoryA)
+            .when()
+            .get("/api/products");
+
+        // then
+        response.then()
+            .statusCode(200)
+            .body("content", hasSize(2))
+            .body("totalElements", equalTo(2));
+    }
+
+    @Test
+    void 상품_목록_조회_카테고리_필터링_결과_없음() {
+        // given
+        Long categoryA = createCategory("전자기기");
+        Long categoryB = createCategory("가구");
+        createProduct("노트북", 1000000, "https://example.com/laptop.jpg", categoryA);
+
+        // when
+        var response = given()
+            .queryParam("categoryId", categoryB)
+            .when()
+            .get("/api/products");
+
+        // then
+        response.then()
+            .statusCode(200)
+            .body("content", hasSize(0))
+            .body("totalElements", equalTo(0));
+    }
+
+    @Test
     void 상품_단건_조회_성공() {
         // given
         Long categoryId = createCategory("전자기기");

@@ -22,7 +22,10 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public Page<ProductResponse> findAll(Pageable pageable) {
+    public Page<ProductResponse> findAll(Long categoryId, Pageable pageable) {
+        if (categoryId != null) {
+            return productRepository.findByCategoryId(categoryId, pageable).map(ProductResponse::from);
+        }
         return productRepository.findAll(pageable).map(ProductResponse::from);
     }
 
