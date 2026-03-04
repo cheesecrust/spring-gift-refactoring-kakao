@@ -44,7 +44,7 @@ public class OrderService {
     @Transactional
     public OrderResponse create(Member member, OrderRequest request) {
         // validate option
-        Option option = optionRepository.findById(request.optionId())
+        Option option = optionRepository.findByIdForUpdate(request.optionId())
             .orElseThrow(() -> new NoSuchElementException("옵션이 존재하지 않습니다."));
 
         // subtract stock
@@ -52,9 +52,11 @@ public class OrderService {
         optionRepository.save(option);
 
         // deduct points
+        Member lockedMember = memberRepository.findByIdForUpdate(member.getId())
+            .orElseThrow(() -> new NoSuchElementException("Member not found."));
         int price = option.getProduct().getPrice() * request.quantity();
-        member.deductPoint(price);
-        memberRepository.save(member);
+        lockedMember.deductPoint(price);
+        memberRepository.save(lockedMember);
 
         // save order
         Order saved = orderRepository.save(new Order(option, member.getId(), request.quantity(), request.message()));

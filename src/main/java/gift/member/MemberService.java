@@ -39,14 +39,16 @@ public class MemberService {
 
     @Transactional
     public Member update(Long id, String email, String password) {
-        Member member = findById(id);
+        Member member = memberRepository.findByIdForUpdate(id)
+            .orElseThrow(() -> new IllegalArgumentException("Member not found."));
         member.update(email, password);
         return memberRepository.save(member);
     }
 
     @Transactional
     public void chargePoint(Long id, int amount) {
-        Member member = findById(id);
+        Member member = memberRepository.findByIdForUpdate(id)
+            .orElseThrow(() -> new IllegalArgumentException("Member not found."));
         member.chargePoint(amount);
         memberRepository.save(member);
     }
