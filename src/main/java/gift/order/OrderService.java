@@ -20,20 +20,20 @@ public class OrderService {
     private final OptionRepository optionRepository;
 	private final WishRepository wishRepository;
     private final MemberRepository memberRepository;
-    private final KakaoMessageClient kakaoMessageClient;
+    private final MessageClient messageClient;
 
     public OrderService(
         OrderRepository orderRepository,
         OptionRepository optionRepository,
 		WishRepository wishRepository,
         MemberRepository memberRepository,
-        KakaoMessageClient kakaoMessageClient
+        MessageClient messageClient
     ) {
         this.orderRepository = orderRepository;
         this.optionRepository = optionRepository;
 		this.wishRepository = wishRepository;
         this.memberRepository = memberRepository;
-        this.kakaoMessageClient = kakaoMessageClient;
+        this.messageClient = messageClient;
     }
 
     @Transactional(readOnly = true)
@@ -75,7 +75,7 @@ public class OrderService {
         try {
             Order order = orderRepository.findById(orderId).orElseThrow();
             Product product = order.getOption().getProduct();
-            kakaoMessageClient.sendToMe(member.getKakaoAccessToken(), order, product);
+            messageClient.sendToMe(member.getKakaoAccessToken(), order, product);
         } catch (Exception ignored) {
         }
     }

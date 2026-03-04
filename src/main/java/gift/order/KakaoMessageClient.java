@@ -7,13 +7,14 @@ import org.springframework.web.client.RestClient;
 import gift.product.Product;
 
 @Component
-public class KakaoMessageClient {
+public class KakaoMessageClient implements MessageClient {
     private final RestClient restClient;
 
     public KakaoMessageClient(RestClient.Builder builder) {
         this.restClient = builder.build();
     }
 
+    @Override
     public void sendToMe(String accessToken, Order order, Product product) {
         String templateObject = buildTemplate(order, product);
 
