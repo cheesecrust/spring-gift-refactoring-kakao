@@ -83,4 +83,8 @@ public class Member {
     public int getPoint() {
         return point;
     }
+
+    public Boolean equalsPassword(String password) {
+        return this.password.equals(password);
+    }
 }
