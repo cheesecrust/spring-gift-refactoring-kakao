@@ -296,6 +296,54 @@ class OrderAcceptanceTest {
     }
 
     @Test
+    void 주문_생성_성공_위시_자동_제거() {
+        // given
+        String token = registerAndGetToken("user@example.com");
+        Long categoryId = createCategory();
+        Long productId = createProduct(categoryId, 1000);
+        Long optionId = createOption(productId, "기본", 100);
+        chargePoint("user@example.com", 10000);
+        addWish(token, productId);
+
+        // when
+        given()
+            .contentType(ContentType.JSON)
+            .header("Authorization", "Bearer " + token)
+            .body(Map.of("optionId", optionId, "quantity", 1, "message", ""))
+            .when()
+            .post("/api/orders")
+            .then()
+            .statusCode(201);
+
+        // then — 위시가 제거되었는지 확인
+        Member member = memberRepository.findByEmail("user@example.com").orElseThrow();
+        assertThat(wishRepository.findByMemberIdAndProductId(member.getId(), productId)).isEmpty();
+    }
+
+    @Test
+    void 주문_생성_성공_위시_없어도_정상_동작() {
+        // given — 위시 등록 없이 주문
+        String token = registerAndGetToken("user@example.com");
+        Long categoryId = createCategory();
+        Long productId = createProduct(categoryId, 1000);
+        Long optionId = createOption(productId, "기본", 100);
+        chargePoint("user@example.com", 10000);
+
+        // when
+        var response = given()
+            .contentType(ContentType.JSON)
+            .header("Authorization", "Bearer " + token)
+            .body(Map.of("optionId", optionId, "quantity", 1, "message", ""))
+            .when()
+            .post("/api/orders");
+
+        // then — 위시 없이도 주문 성공
+        response.then()
+            .statusCode(201)
+            .body("id", notNullValue());
+    }
+
+    @Test
     void 주문_생성_실패_존재하지_않는_옵션() {
         // given
         String token = registerAndGetToken("user@example.com");

@@ -59,6 +59,10 @@ public class OrderService {
         // save order
         Order saved = orderRepository.save(new Order(option, member.getId(), request.quantity(), request.message()));
 
+        // cleanup wish
+        wishRepository.findByMemberIdAndProductId(member.getId(), option.getProduct().getId())
+            .ifPresent(wishRepository::delete);
+
         return OrderResponse.from(saved);
     }
 
