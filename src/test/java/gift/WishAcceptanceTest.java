@@ -79,9 +79,13 @@ class WishAcceptanceTest {
     }
 
     Long createProduct(Long categoryId) {
+        return createProduct(categoryId, "테스트상품");
+    }
+
+    Long createProduct(Long categoryId, String name) {
         return given()
             .contentType(ContentType.JSON)
-            .body(Map.of("name", "테스트상품", "price", 10000, "imageUrl", "https://example.com/p.jpg", "categoryId",
+            .body(Map.of("name", name, "price", 10000, "imageUrl", "https://example.com/p.jpg", "categoryId",
                 categoryId))
             .when()
             .post("/api/products")
@@ -174,6 +178,34 @@ class WishAcceptanceTest {
         // then
         response.then()
             .statusCode(400);
+    }
+
+    @Test
+    void 위시_목록_조회_createdDate_내림차순_정렬() {
+        // given
+        String token = registerAndGetToken("user@example.com");
+        Long categoryId = createCategory();
+        Long productId1 = createProduct(categoryId, "상품A");
+        Long productId2 = createProduct(categoryId, "상품B");
+        addWish(token, productId1);
+        addWish(token, productId2);
+
+        // when
+        var response = given()
+            .header("Authorization", "Bearer " + token)
+            .queryParam("page", 0)
+            .queryParam("size", 10)
+            .queryParam("sort", "createdDate,desc")
+            .when()
+            .get("/api/wishes");
+
+        // then — 나중에 추가한 상품B가 먼저 나와야 한다
+        response.then()
+            .statusCode(200)
+            .body("content", hasSize(2))
+            .body("content[0].name", equalTo("상품B"))
+            .body("content[1].name", equalTo("상품A"))
+            .body("content[0].createdDate", notNullValue());
     }
 
     // ── 위시 추가 ──
