@@ -2,6 +2,8 @@ package gift.order;
 
 import java.util.NoSuchElementException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ import gift.wish.WishRepository;
 
 @Service
 public class OrderService {
+    private static final Logger log = LoggerFactory.getLogger(OrderService.class);
     private final OrderRepository orderRepository;
     private final OptionRepository optionRepository;
 	private final WishRepository wishRepository;
@@ -76,7 +79,8 @@ public class OrderService {
             Order order = orderRepository.findById(orderId).orElseThrow();
             Product product = order.getOption().getProduct();
             messageClient.sendToMe(member.getKakaoAccessToken(), order, product);
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            log.warn("카카오 메시지 전송 실패: orderId={}, memberId={}", orderId, member.getId(), e);
         }
     }
 }
