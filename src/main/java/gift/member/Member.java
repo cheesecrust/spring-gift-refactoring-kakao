@@ -84,7 +84,14 @@ public class Member {
         return point;
     }
 
-    public Boolean equalsPassword(String password) {
+    public boolean isPasswordValid(String password) {
+        if (this.password == null) {
+            return false;
+        }
         return this.password.equals(password);
+    }
+
+    public boolean hasKakaoAccessToken() {
+        return this.kakaoAccessToken != null;
     }
 }
