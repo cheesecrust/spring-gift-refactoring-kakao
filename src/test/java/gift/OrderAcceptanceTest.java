@@ -12,13 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 
-import gift.category.CategoryRepository;
 import gift.member.Member;
 import gift.member.MemberRepository;
 import gift.option.Option;
 import gift.option.OptionRepository;
-import gift.order.OrderRepository;
-import gift.product.ProductRepository;
 import gift.wish.WishRepository;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -30,32 +27,21 @@ class OrderAcceptanceTest {
     int port;
 
     @Autowired
-    OrderRepository orderRepository;
+    DatabaseCleaner databaseCleaner;
 
     @Autowired
-    WishRepository wishRepository;
+    MemberRepository memberRepository;
 
     @Autowired
     OptionRepository optionRepository;
 
     @Autowired
-    ProductRepository productRepository;
-
-    @Autowired
-    CategoryRepository categoryRepository;
-
-    @Autowired
-    MemberRepository memberRepository;
+    WishRepository wishRepository;
 
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
-        orderRepository.deleteAll();
-        wishRepository.deleteAll();
-        optionRepository.deleteAll();
-        productRepository.deleteAll();
-        categoryRepository.deleteAll();
-        memberRepository.deleteAll();
+        databaseCleaner.clear();
     }
 
     // ── 헬퍼 ──

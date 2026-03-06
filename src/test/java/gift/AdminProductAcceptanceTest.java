@@ -17,12 +17,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import gift.category.Category;
 import gift.category.CategoryRepository;
-import gift.member.MemberRepository;
-import gift.option.OptionRepository;
-import gift.order.OrderRepository;
 import gift.product.Product;
 import gift.product.ProductRepository;
-import gift.wish.WishRepository;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -32,13 +28,7 @@ class AdminProductAcceptanceTest {
     MockMvc mockMvc;
 
     @Autowired
-    OrderRepository orderRepository;
-
-    @Autowired
-    WishRepository wishRepository;
-
-    @Autowired
-    OptionRepository optionRepository;
+    DatabaseCleaner databaseCleaner;
 
     @Autowired
     ProductRepository productRepository;
@@ -46,17 +36,9 @@ class AdminProductAcceptanceTest {
     @Autowired
     CategoryRepository categoryRepository;
 
-    @Autowired
-    MemberRepository memberRepository;
-
     @BeforeEach
     void setUp() {
-        orderRepository.deleteAll();
-        wishRepository.deleteAll();
-        optionRepository.deleteAll();
-        productRepository.deleteAll();
-        categoryRepository.deleteAll();
-        memberRepository.deleteAll();
+        databaseCleaner.clear();
     }
 
     Category createCategory(String name) {

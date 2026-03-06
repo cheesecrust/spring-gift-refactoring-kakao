@@ -14,10 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import gift.member.Member;
 import gift.member.MemberRepository;
 import gift.member.MemberService;
-import gift.option.OptionRepository;
-import gift.order.OrderRepository;
-import gift.product.ProductRepository;
-import gift.wish.WishRepository;
 
 @SpringBootTest
 class MemberPointConcurrencyTest {
@@ -29,24 +25,11 @@ class MemberPointConcurrencyTest {
     MemberRepository memberRepository;
 
     @Autowired
-    OrderRepository orderRepository;
-
-    @Autowired
-    WishRepository wishRepository;
-
-    @Autowired
-    OptionRepository optionRepository;
-
-    @Autowired
-    ProductRepository productRepository;
+    DatabaseCleaner databaseCleaner;
 
     @BeforeEach
     void setUp() {
-        orderRepository.deleteAll();
-        wishRepository.deleteAll();
-        optionRepository.deleteAll();
-        productRepository.deleteAll();
-        memberRepository.deleteAll();
+        databaseCleaner.clear();
     }
 
     @Test

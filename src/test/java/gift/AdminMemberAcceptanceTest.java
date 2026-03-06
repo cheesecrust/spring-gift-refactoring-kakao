@@ -17,10 +17,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import gift.member.Member;
 import gift.member.MemberRepository;
-import gift.option.OptionRepository;
-import gift.order.OrderRepository;
-import gift.product.ProductRepository;
-import gift.wish.WishRepository;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -30,27 +26,14 @@ class AdminMemberAcceptanceTest {
     MockMvc mockMvc;
 
     @Autowired
-    OrderRepository orderRepository;
-
-    @Autowired
-    WishRepository wishRepository;
-
-    @Autowired
-    OptionRepository optionRepository;
-
-    @Autowired
-    ProductRepository productRepository;
+    DatabaseCleaner databaseCleaner;
 
     @Autowired
     MemberRepository memberRepository;
 
     @BeforeEach
     void setUp() {
-        orderRepository.deleteAll();
-        wishRepository.deleteAll();
-        optionRepository.deleteAll();
-        productRepository.deleteAll();
-        memberRepository.deleteAll();
+        databaseCleaner.clear();
     }
 
     @Test
