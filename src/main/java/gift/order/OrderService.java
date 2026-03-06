@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import gift.member.Member;
+import gift.member.MemberNotFoundException;
 import gift.member.MemberRepository;
 import gift.option.Option;
 import gift.option.OptionRepository;
@@ -56,7 +57,7 @@ public class OrderService {
 
         // deduct points
         Member lockedMember = memberRepository.findByIdForUpdate(member.getId())
-            .orElseThrow(() -> new NoSuchElementException("Member not found."));
+            .orElseThrow(() -> new MemberNotFoundException(member.getId()));
         int price = option.getProduct().getPrice() * request.quantity();
         lockedMember.deductPoint(price);
         memberRepository.save(lockedMember);

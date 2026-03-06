@@ -26,7 +26,7 @@ public class MemberService {
     @Transactional(readOnly = true)
     public Member findById(Long id) {
         return memberRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Member not found."));
+            .orElseThrow(() -> new MemberNotFoundException(id));
     }
 
     @Transactional
@@ -40,7 +40,7 @@ public class MemberService {
     @Transactional
     public Member update(Long id, String email, String password) {
         Member member = memberRepository.findByIdForUpdate(id)
-            .orElseThrow(() -> new IllegalArgumentException("Member not found."));
+            .orElseThrow(() -> new MemberNotFoundException(id));
         member.update(email, password);
         return memberRepository.save(member);
     }
@@ -48,7 +48,7 @@ public class MemberService {
     @Transactional
     public void chargePoint(Long id, int amount) {
         Member member = memberRepository.findByIdForUpdate(id)
-            .orElseThrow(() -> new IllegalArgumentException("Member not found."));
+            .orElseThrow(() -> new MemberNotFoundException(id));
         member.chargePoint(amount);
         memberRepository.save(member);
     }

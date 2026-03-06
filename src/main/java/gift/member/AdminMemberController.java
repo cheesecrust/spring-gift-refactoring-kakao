@@ -51,7 +51,7 @@ public class AdminMemberController {
 
     @GetMapping("/{id}/edit")
     public String editForm(@PathVariable Long id, Model model) {
-        model.addAttribute("member", findMemberById(id));
+        model.addAttribute("member", memberService.findById(id));
         return "member/edit";
     }
 
@@ -61,7 +61,7 @@ public class AdminMemberController {
         @RequestParam String email,
         @RequestParam String password
     ) {
-        withMemberIdContext(id, () -> memberService.update(id, email, password));
+        memberService.update(id, email, password);
         return "redirect:/admin/members";
     }
 
@@ -70,7 +70,7 @@ public class AdminMemberController {
         @PathVariable Long id,
         @RequestParam int amount
     ) {
-        withMemberIdContext(id, () -> memberService.chargePoint(id, amount));
+        memberService.chargePoint(id, amount);
         return "redirect:/admin/members";
     }
 
@@ -78,25 +78,6 @@ public class AdminMemberController {
     public String delete(@PathVariable Long id) {
         memberService.delete(id);
         return "redirect:/admin/members";
-    }
-
-    private Member findMemberById(Long id) {
-        try {
-            return memberService.findById(id);
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException(e.getMessage() + " id=" + id);
-        }
-    }
-
-    private void withMemberIdContext(Long id, Runnable action) {
-        try {
-            action.run();
-        } catch (IllegalArgumentException e) {
-            if (e.getMessage().contains("Member not found")) {
-                throw new IllegalArgumentException(e.getMessage() + " id=" + id);
-            }
-            throw e;
-        }
     }
 
     private void populateNewFormError(Model model, String email, String error) {
