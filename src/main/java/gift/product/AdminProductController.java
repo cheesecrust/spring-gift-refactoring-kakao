@@ -44,13 +44,13 @@ public class AdminProductController {
         @RequestParam Long categoryId,
         Model model
     ) {
-        List<String> errors = ProductNameValidator.validate(name, true);
+        List<String> errors = ProductNameValidator.validate(name, NamePolicy.ALLOW_KAKAO);
         if (!errors.isEmpty()) {
             populateNewForm(model, errors, name, price, imageUrl, categoryId);
             return "product/new";
         }
 
-        createOrUpdateProduct(() -> productService.create(new ProductRequest(name, price, imageUrl, categoryId), true), categoryId);
+        createOrUpdateProduct(() -> productService.create(new ProductRequest(name, price, imageUrl, categoryId), NamePolicy.ALLOW_KAKAO), categoryId);
         return "redirect:/admin/products";
     }
 
@@ -71,14 +71,14 @@ public class AdminProductController {
         @RequestParam Long categoryId,
         Model model
     ) {
-        List<String> errors = ProductNameValidator.validate(name, true);
+        List<String> errors = ProductNameValidator.validate(name, NamePolicy.ALLOW_KAKAO);
         if (!errors.isEmpty()) {
             ProductResponse product = findProductById(id);
             populateEditForm(model, product, errors, name, price, imageUrl, categoryId);
             return "product/edit";
         }
 
-        createOrUpdateProduct(() -> productService.update(id, new ProductRequest(name, price, imageUrl, categoryId), true), categoryId);
+        createOrUpdateProduct(() -> productService.update(id, new ProductRequest(name, price, imageUrl, categoryId), NamePolicy.ALLOW_KAKAO), categoryId);
         return "redirect:/admin/products";
     }
 

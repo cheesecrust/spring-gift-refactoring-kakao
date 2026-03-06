@@ -43,12 +43,12 @@ public class ProductService {
 
     @Transactional
     public ProductResponse create(ProductRequest request) {
-        return create(request, false);
+        return create(request, NamePolicy.STANDARD);
     }
 
     @Transactional
-    public ProductResponse create(ProductRequest request, boolean allowKakao) {
-        validateName(request.name(), allowKakao);
+    public ProductResponse create(ProductRequest request, NamePolicy namePolicy) {
+        validateName(request.name(), namePolicy);
         Category category = findCategory(request.categoryId());
         Product saved = productRepository.save(request.toEntity(category));
         return ProductResponse.from(saved);
@@ -56,12 +56,12 @@ public class ProductService {
 
     @Transactional
     public ProductResponse update(Long id, ProductRequest request) {
-        return update(id, request, false);
+        return update(id, request, NamePolicy.STANDARD);
     }
 
     @Transactional
-    public ProductResponse update(Long id, ProductRequest request, boolean allowKakao) {
-        validateName(request.name(), allowKakao);
+    public ProductResponse update(Long id, ProductRequest request, NamePolicy namePolicy) {
+        validateName(request.name(), namePolicy);
         Category category = findCategory(request.categoryId());
         Product product = productRepository.findById(id)
             .orElseThrow(() -> new NoSuchElementException("상품이 존재하지 않습니다."));
@@ -79,8 +79,8 @@ public class ProductService {
             .orElseThrow(() -> new NoSuchElementException("카테고리가 존재하지 않습니다."));
     }
 
-    private void validateName(String name, boolean allowKakao) {
-        List<String> errors = ProductNameValidator.validate(name, allowKakao);
+    private void validateName(String name, NamePolicy namePolicy) {
+        List<String> errors = ProductNameValidator.validate(name, namePolicy);
         if (!errors.isEmpty()) {
             throw new IllegalArgumentException(String.join(", ", errors));
         }
