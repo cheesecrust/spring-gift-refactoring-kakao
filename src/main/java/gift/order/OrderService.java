@@ -63,10 +63,10 @@ public class OrderService {
         memberRepository.save(lockedMember);
 
         // save order
-        Order saved = orderRepository.save(new Order(option, member.getId(), request.quantity(), request.message()));
+        Order saved = orderRepository.save(new Order(option, lockedMember.getId(), request.quantity(), request.message()));
 
         // cleanup wish
-        wishRepository.findByMemberIdAndProductId(member.getId(), option.getProduct().getId())
+        wishRepository.findByMemberIdAndProductId(lockedMember.getId(), option.getProduct().getId())
             .ifPresent(wishRepository::delete);
 
         return OrderResponse.from(saved);
